@@ -1,3 +1,3 @@
-export default function Input() {
-  return <input type="text" />;
+export default function Input({ type }) {
+  return <input className="border-red-100 border" type={type} />;
 }
