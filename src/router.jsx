@@ -3,6 +3,7 @@ import App from "./App";
 import Homepage from "./pages/Homepage/Homepage";
 import Blog from "./pages/Blog/Blog";
 import Register from "./pages/Forms/Register";
+import Login from "./pages/Forms/Login";
 import ErrorPage from "./pages/ErrorPage";
 
 export const router = createBrowserRouter([
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },

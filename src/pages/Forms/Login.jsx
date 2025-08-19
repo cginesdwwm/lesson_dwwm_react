@@ -38,7 +38,7 @@ export default function Login() {
       >
         <div className="flex flex-col mb-2">
           <label htmlFor="data" className="mb-2">
-            Pseudo ou E-mail
+            Pseudo ou Email
           </label>
           <input
             {...register("data")}
@@ -62,10 +62,10 @@ export default function Login() {
             <p className="text-red-500">{errors.password.message}</p>
           )}
         </div>
-        <NavLink to="/register" className="text-blue-500 hover:text-black">
+        <NavLink to="/register" className="text-blue-500">
           Pas encore inscrit ?
         </NavLink>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Submit
         </button>
       </form>

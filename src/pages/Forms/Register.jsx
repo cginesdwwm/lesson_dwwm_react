@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { NavLink } from "react-router-dom";
 
 export default function Register() {
   const defaultValues = {
@@ -125,6 +126,9 @@ export default function Register() {
           </label>
           {errors.rgpd && <p className="text-red-500">{errors.rgpd.message}</p>}
         </div>
+        <NavLink to="/login" className="text-blue-500">
+          Déjà inscrit ?
+        </NavLink>
         <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Submit
         </button>
