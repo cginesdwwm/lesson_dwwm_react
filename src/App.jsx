@@ -10,9 +10,13 @@ function App() {
     setUser(true);
   };
 
+  const logout = () => {
+    setUser(false);
+  };
+
   return (
     <div className="h-screen flex flex-col">
-      <Header userConnected={user} login={login} />
+      <Header userConnected={user} login={login} logout={logout} />
       <main className="flex-1 flex items-center justify-center">
         <Outlet />
       </main>

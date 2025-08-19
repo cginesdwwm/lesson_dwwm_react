@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
-export default function Header({ userConnected, login }) {
+export default function Header({ userConnected, login, logout }) {
+  const navigate = useNavigate();
   return (
     <header className="bg-white shadow-md p-4 flex flex-row justify-between items-center">
       <NavLink to="/">
@@ -8,9 +9,13 @@ export default function Header({ userConnected, login }) {
       </NavLink>
       {userConnected ? (
         <nav className="flex space-x-6 items-center">
-          <a href="#" className="text-gray-600 hover:text-black font-semibold">
+          <NavLink
+            to="/"
+            onClick={logout}
+            className="text-gray-600 hover:text-black font-semibold"
+          >
             Déconnexion
-          </a>
+          </NavLink>
           <a href="#">Profil</a>
         </nav>
       ) : (
