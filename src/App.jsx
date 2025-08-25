@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import "./App.css";
 import { useState } from "react";
 import Header from "./components/Header/Header";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -20,6 +21,7 @@ function App() {
       <main className="flex-1 flex items-center justify-center">
         <Outlet />
       </main>
+      <Toaster />
     </div>
   );
 }
