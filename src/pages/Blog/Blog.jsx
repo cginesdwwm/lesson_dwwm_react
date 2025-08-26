@@ -1,6 +1,16 @@
-import { useMemo, useState } from "react";
-import Card from "../../components/Common/Card";
+/*
+  Blog.jsx
+  - Page qui affiche une liste d'articles (blogs).
+  - Utilise useState pour stocker les données localement (ici initialisées
+    depuis `initialBlogs`), useMemo pour calculer les années et la liste filtrée.
+  - Possède une recherche (query) et un filtre par année (yearFilter).
+  - Chaque article est affiché via un composant réutilisable `Card`.
+*/
 
+import { useMemo, useState } from "react";
+import Card from "../../components/Common/Card"; // Composant réutilisable pour afficher un article
+
+// Données initiales (dans une vraie app, on ferait un fetch vers une API)
 const initialBlogs = [
   {
     id: 4,
@@ -68,20 +78,26 @@ const initialBlogs = [
 ];
 
 export default function Blog() {
-  const [blogs] = useState(initialBlogs);
+  // State local : blogs, query (recherche), et yearFilter (filtre par année)
+  const [blogs] = useState(initialBlogs); // ici on ne modifie pas la liste, donc pas de setter utilisé
   const [query, setQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
+  // years : calcule les années disponibles à partir des dates des articles
+  // useMemo évite de recalculer inutilement à chaque rendu si `blogs` ne change pas
   const years = useMemo(() => {
     const set = new Set(blogs.map((b) => b.date.split("-")[0]));
-    return Array.from(set).sort((a, b) => b - a);
+    return Array.from(set).sort((a, b) => b - a); // ordre décroissant
   }, [blogs]);
 
+  // filtered : articles qui correspondent à la recherche et au filtre par année
   const filtered = useMemo(() => {
     return blogs.filter((b) => {
+      // combine titre + texte pour la recherche en minuscule
       const matchesQuery = `${b.titre} ${b.texte}`
         .toLowerCase()
         .includes(query.toLowerCase());
+      // si yearFilter est vide, on accepte toutes les années
       const matchesYear = yearFilter ? b.date.startsWith(yearFilter) : true;
       return matchesQuery && matchesYear;
     });
@@ -91,16 +107,17 @@ export default function Blog() {
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">Blog</h1>
 
+      {/* Barre de recherche + filtre par année */}
       <div className="flex mb-6 space-x-4">
         <input
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)} // met à jour la recherche
           placeholder="Rechercher..."
           className="border px-3 py-2 rounded flex-1"
         />
         <select
           value={yearFilter}
-          onChange={(e) => setYearFilter(e.target.value)}
+          onChange={(e) => setYearFilter(e.target.value)} // met à jour le filtre par année
           className="border px-3 py-2 rounded"
         >
           <option value="">Toutes les années</option>
@@ -112,6 +129,7 @@ export default function Blog() {
         </select>
       </div>
 
+      {/* Liste des articles affichée en grille. Chaque article utilise le composant Card */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((post) => (
           <Card key={post.id} post={post} />

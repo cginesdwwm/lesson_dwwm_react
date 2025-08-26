@@ -1,19 +1,38 @@
+/*
+  Login.jsx
+  - Formulaire de connexion utilisant react-hook-form + yup pour la validation.
+  - Comportement:
+    1. L'utilisateur saisit son pseudo/email et mot de passe.
+    2. À la soumission, on appelle l'API backend `POST /user/login`.
+    3. Si la réponse est OK, on affiche un toast, on navigue à l'accueil et
+       on réinitialise le formulaire.
+
+  Notes pédagogiques:
+  - react-hook-form simplifie la gestion des formulaires et la validation.
+  - yup définit un schéma de validation clair et réutilisable.
+*/
+
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Login() {
+  const navigate = useNavigate(); // hook pour changer de route
+
   const defaultValues = {
     data: "",
     password: "",
   };
 
+  // Schéma de validation avec yup
   const schema = yup.object({
     data: yup.string().required("Ce champ est obligatoire"),
     password: yup.string().required("Le mot de passe est obligatoire"),
   });
 
+  // useForm fournit register, handleSubmit et l'objet errors
   const {
     register,
     handleSubmit,
@@ -21,15 +40,36 @@ export default function Login() {
     reset,
   } = useForm({
     defaultValues,
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema), // intègre yup à react-hook-form
     mode: "onChange",
   });
 
-  function submit(values) {
-    console.log(values);
-    reset(defaultValues);
-    // requete HTTP
+  // Fonction appelée à la soumission du formulaire
+  async function submit(values) {
+    try {
+      const response = await fetch("http://localhost:5000/user/login", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const responseFromBackend = await response.json();
+      if (response.ok) {
+        // succès -> notification et redirection
+        toast.success("Connecté avec succès");
+        navigate("/");
+        reset(defaultValues);
+      } else {
+        // erreur liée aux identifiants
+        toast.error("Email et/ou mot de passe incorrect");
+      }
+    } catch (error) {
+      // erreur réseau ou serveur
+      console.log(error);
+    }
   }
+
   return (
     <div className="w-full max-w-md p-6 bg-white shadow-xl rounded">
       <form
@@ -40,6 +80,7 @@ export default function Login() {
           <label htmlFor="data" className="mb-2">
             Pseudo ou Email
           </label>
+          {/* register lie l'input au formulaire */}
           <input
             {...register("data")}
             type="text"
@@ -48,6 +89,7 @@ export default function Login() {
           />
           {errors.data && <p className="text-red-500">{errors.data.message}</p>}
         </div>
+
         <div className="flex flex-col mb-2">
           <label htmlFor="password" className="mb-2">
             Mot de passe
@@ -62,9 +104,11 @@ export default function Login() {
             <p className="text-red-500">{errors.password.message}</p>
           )}
         </div>
+
         <NavLink to="/register" className="text-blue-500">
           Pas encore inscrit ?
         </NavLink>
+
         <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Submit
         </button>

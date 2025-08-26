@@ -1,3 +1,12 @@
+/*
+  router.jsx
+  - Définit les routes de l'application à l'aide de createBrowserRouter.
+  - Chaque route a un `path` (URL) et un `element` (composant React à afficher).
+  - Important pour débutant : les chemins de route sont sensibles à la casse par
+    défaut dans react-router v6+ (donc `/blog` != `/Blog`).
+    Pour que l'URL `/Blog` fonctionne aussi, on ajoute un alias avec le même composant.
+*/
+
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Homepage from "./pages/Homepage/Homepage";
@@ -10,7 +19,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />, // Composant affiché si une route n'existe pas ou erreur
     children: [
       {
         path: "/",
@@ -18,6 +27,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/blog",
+        element: <Blog />,
+      },
+      // Alias pour permettre d'accéder à la page via '/Blog' (majuscules)
+      {
+        path: "/Blog",
         element: <Blog />,
       },
       {

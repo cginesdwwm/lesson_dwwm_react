@@ -1,3 +1,17 @@
+/*
+  Register.jsx
+  - Formulaire d'inscription utilisant react-hook-form + yup pour la validation.
+  - Comportement:
+    1. L'utilisateur remplit pseudo, email, mot de passe et confirme le mot de passe.
+    2. Le RGPD (case à cocher) doit être accepté.
+    3. À la soumission, on appelle `POST /user` sur le backend.
+    4. Si succès, on redirige vers la page de connexion.
+
+  Notes pédagogiques:
+  - Le schéma yup permet de valider les règles (format email, longueur mot de passe, correspondance des mots de passe).
+  - En dev, vérifier la réponse du backend pour afficher les messages d'erreur utiles.
+*/
+
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,13 +29,14 @@ export default function Register() {
     rgpd: false,
   };
 
+  // Schéma yup pour valider les champs
   const schema = yup.object({
     username: yup.string().required("Ce champ est obligatoire"),
     email: yup
       .string()
       .email()
       .required("Le champ est obligatoire")
-      .matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Format email non valide"),
+      .matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, "Format email non valide"),
     password: yup
       .string()
       .required("Le mot de passe est obligatoire")
@@ -50,15 +65,15 @@ export default function Register() {
     mode: "onChange",
   });
 
+  // Fonction appelée à la soumission du formulaire
   async function submit(values) {
-    console.log(values);
     try {
       const response = await fetch("http://localhost:5000/user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(values),
+        headers: {
+          "Content-type": "application/json",
+        },
       });
       const responseFromBackend = await response.json();
       if (response.ok) {
@@ -71,8 +86,6 @@ export default function Register() {
     } catch (error) {
       console.log(error);
     }
-    // reset(defaultValues);
-    // requete HTTP
   }
 
   return (
@@ -95,6 +108,7 @@ export default function Register() {
             <p className="text-red-500">{errors.username.message}</p>
           )}
         </div>
+
         <div className="flex flex-col mb-2">
           <label htmlFor="email" className="mb-2">
             Email
@@ -109,6 +123,7 @@ export default function Register() {
             <p className="text-red-500">{errors.email.message}</p>
           )}
         </div>
+
         <div className="flex flex-col mb-2">
           <label htmlFor="password" className="mb-2">
             Mot de passe
@@ -123,6 +138,7 @@ export default function Register() {
             <p className="text-red-500">{errors.password.message}</p>
           )}
         </div>
+
         <div className="flex flex-col mb-2">
           <label htmlFor="confirmPassword" className="mb-2">
             Confirmation du mot de passe
@@ -137,6 +153,7 @@ export default function Register() {
             <p className="text-red-500">{errors.confirmPassword.message}</p>
           )}
         </div>
+
         <div className="flex flex-col mb-2">
           <label htmlFor="rgpd" className="mb-2">
             <input
@@ -149,9 +166,11 @@ export default function Register() {
           </label>
           {errors.rgpd && <p className="text-red-500">{errors.rgpd.message}</p>}
         </div>
+
         <NavLink to="/login" className="text-blue-500">
           Déjà inscrit ?
         </NavLink>
+
         <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Submit
         </button>
