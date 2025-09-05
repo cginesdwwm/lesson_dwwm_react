@@ -1,49 +1,24 @@
-/*
-  Card.jsx
-  - Affiche un article (image, titre, texte, date) et un bouton "like".
-  - Utilise LikesContext pour partager l'état des likes entre les composants.
-  - Props:
-    - post: objet article { id, titre, texte, image, date }
-*/
+import { NavLink } from "react-router-dom";
 
-import React, { useContext } from "react";
-import { LikesContext } from "../../context/LikesContext"; // contexte centralisé pour les likes
-
-export default function Card({ post }) {
-  // on récupère les ids likés et la fonction toggle depuis le contexte
-  const { likedIds, toggleLike } = useContext(LikesContext);
-  const liked = likedIds.includes(post.id); // true si l'utilisateur a liké cet article
-
+export default function Card({ blog }) {
   return (
-    <article className="max-w-sm rounded overflow-hidden shadow-lg m-4">
-      {/* Image de l'article */}
-      <img
-        src={post.image}
-        alt={post.titre}
-        className="w-full h-48 object-cover"
-      />
-
-      {/* Titre et texte */}
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{post.titre}</div>
-        <p className="text-gray-700 text-base">{post.texte}</p>
+    <NavLink to={`/blogdetails/${blog._id}`}>
+      <div className="border border-gray-400 rounded-lg m-4">
+        <div className="aspect-[3/2]">
+          <img
+            src={blog.image}
+            alt={blog.titre}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="p-3">
+          <p className="text-lg text-blue-500">{blog.titre}</p>
+          <p className="text-base">{blog.texte}</p>
+          <p className="text-[14px] text-red-400 text-left mt-4">
+            Créé le {blog.date}
+          </p>
+        </div>
       </div>
-
-      {/* Footer de la carte: date + bouton like */}
-      <div className="px-6 pb-4 flex items-center justify-between">
-        <span className="text-sm text-gray-500">{post.date}</span>
-
-        {/* Le bouton appelle toggleLike(post.id) pour basculer l'état */}
-        <button
-          onClick={() => toggleLike(post.id)}
-          className={`px-3 py-1 rounded ${
-            liked ? "bg-red-500 text-white" : "bg-gray-200"
-          }`}
-        >
-          {/* coeur rempli ou vide selon l'état */}
-          {liked ? "♥" : "♡"}
-        </button>
-      </div>
-    </article>
+    </NavLink>
   );
 }

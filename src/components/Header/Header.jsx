@@ -6,8 +6,11 @@
 */
 
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Header() {
+  const { userConnected, logout } = useAuth();
+
   return (
     <header className="bg-white shadow-md p-4 flex flex-row justify-between items-center">
       {/* Logo / titre cliquable qui renvoie à la page d'accueil */}
@@ -18,19 +21,38 @@ export default function Header() {
       {/* Navigation principale */}
       <nav className="flex space-x-6">
         {/* NavLink remplace <a> pour permettre une navigation sans rechargement */}
-        <NavLink
-          to="/login"
-          className="text-gray-600 hover:text-black font-semibold"
-        >
-          Connexion
-        </NavLink>
-
-        <NavLink
-          to="/register"
-          className="text-gray-600 hover:text-black font-semibold"
-        >
-          Inscription
-        </NavLink>
+        {userConnected ? (
+          <>
+            <NavLink
+              to="/blog"
+              className="text-gray-600 hover:text-black font-semibold"
+            >
+              Blog
+            </NavLink>
+            <NavLink
+              to="/"
+              className="text-gray-600 hover:text-black font-semibold"
+              onClick={logout}
+            >
+              Déconnexion
+            </NavLink>
+          </>
+        ) : (
+          <>
+            <NavLink
+              to="/login"
+              className="text-gray-600 hover:text-black font-semibold"
+            >
+              Connexion
+            </NavLink>
+            <NavLink
+              to="/register"
+              className="text-gray-600 hover:text-black font-semibold"
+            >
+              Inscription
+            </NavLink>
+          </>
+        )}
       </nav>
     </header>
   );

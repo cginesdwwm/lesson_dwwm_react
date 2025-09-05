@@ -10,19 +10,20 @@ import { Outlet } from "react-router-dom"; // Emplacement des routes enfants
 import "./App.css"; // Styles locaux de l'application
 import Header from "./components/Header/Header"; // Le header (nav)
 import { Toaster } from "react-hot-toast"; // Notifications toast
+import { AuthProvider } from "./context/AuthContext";
+import { BlogProvider } from "./context/BlogContext";
 
 function App() {
   return (
-    // Layout principal en flex-col (header en haut, contenu qui prend l'espace restant)
     <div className="h-screen flex flex-col">
-      {/* Header visible sur toutes les pages */}
-      <Header />
-
-      {/* Zone principale où s'affichent les pages selon la route */}
-      <main className="flex-1 flex items-center justify-center">
-        <Outlet />
-      </main>
-
+      <AuthProvider>
+        <BlogProvider>
+          <Header />
+          <main className="flex-1 flex items-center justify-center">
+            <Outlet />
+          </main>
+        </BlogProvider>
+      </AuthProvider>
       {/* Toaster global pour afficher des notifications (doit être présent une seule fois) */}
       <Toaster />
     </div>
